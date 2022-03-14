@@ -116,7 +116,7 @@ export function ParsC() {
             inst_position + position
             , 1.0);
 
-          v_inst_color = (inst_color) + 0.5 * pattern(vec2(inst_uv.xy)) * sin(time);
+          v_inst_color = (inst_color) + 0.7 * pattern(vec2(inst_uv.xy)) * sin(time);
 
           if (displacementColor.r <= 0.5) {
             vert.w = 0.0;
