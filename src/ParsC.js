@@ -43,16 +43,16 @@ export function ParsC() {
         `https://effectnode-2022.s3.ap-southeast-1.amazonaws.com/texture/images/earth-displacement/2k_earth_specular_map-invert-displace.png`
       );
 
-      let dayMap = new TextureLoader().load(
-        `https://effectnode-2022.s3.ap-southeast-1.amazonaws.com/texture/images/earth-displacement/4k-earth-daytime.jpg`
-      );
-      dayMap.encoding = sRGBEncoding;
+      // let dayMap = new TextureLoader().load(
+      //   `https://effectnode-2022.s3.ap-southeast-1.amazonaws.com/texture/images/earth-displacement/4k-earth-daytime.jpg`
+      // );
+      // dayMap.encoding = sRGBEncoding;
 
       //
       let uniforms = {
         displacement: { value: displacement },
         time: { value: 0 },
-        dayMap: { value: dayMap },
+        // dayMap: { value: dayMap },
       };
 
       //
@@ -92,7 +92,7 @@ export function ParsC() {
         uniform float radius;
 
         uniform sampler2D displacement;
-        uniform sampler2D dayMap;
+        // uniform sampler2D dayMap;
 
         attribute vec3 inst_position;
         attribute vec3 inst_color;
@@ -109,7 +109,7 @@ export function ParsC() {
 
           //
 
-          vec4 dayMapColor = texture2D(dayMap, inst_uv);
+          // vec4 dayMapColor = texture2D(dayMap, inst_uv);
           vec4 displacementColor = texture2D(displacement, inst_uv);
           vec4 vert = vec4(
             inst_position + position
