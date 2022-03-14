@@ -37,7 +37,7 @@ export function ParsC() {
     let run = async () => {
       let o3d = new Object3D();
 
-      let geo = new SphereBuffer(16, 150, 150);
+      let geo = new SphereBuffer(15.5, 150, 150);
 
       let displacement = new TextureLoader().load(
         `https://effectnode-2022.s3.ap-southeast-1.amazonaws.com/texture/images/earth-displacement/2k_earth_specular_map-invert-displace.png`
