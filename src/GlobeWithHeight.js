@@ -49,8 +49,10 @@ export function GlobeWithHeight() {
       }
     );
 
-    let sea = new Color("#0c5a6d"); //.addScalar(-0.1);
-    let hill = new Color("#0c6d1e").sub(new Color("#333333"));
+    let sea = new Color("#0c5a6d").multiplyScalar(0.2); //.addScalar(-0.1);
+    let hill = new Color("#0c6d1e")
+      .sub(new Color("#333333"))
+      .multiplyScalar(0.2);
     let waterGeo = new SphereBufferGeometry(15.2, 32, 32);
     let waterMat = new MeshStandardMaterial({
       color: sea.clone().sub(new Color("#333333")),
@@ -107,7 +109,6 @@ export function GlobeWithHeight() {
           vec4 nightColor = texture2D(nightMap, vMyUv);
           vec4 normalColor = texture2D(normalMap, vMyUv);
           float floorRatio = pow(dot(normalize(vNewPos.rgb), vNewPos.rgb), 3.0);
-
 
           // dayColor.rgb * + nightColor.rgb
           gl_FragColor = vec4(mix(seaColor, hillColor, floorRatio), 1.0);

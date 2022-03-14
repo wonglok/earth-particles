@@ -5,6 +5,7 @@ import { InstancedBufferGeometry } from "three";
 import { IcosahedronBufferGeometry } from "three";
 import { InstancedBufferAttribute } from "three";
 import { Color } from "three";
+import { BoxBufferGeometry } from "three";
 
 export class SphereBuffer {
   constructor(
@@ -155,7 +156,8 @@ export class SphereBuffer {
     // this.setAttribute("uv", new Float32BufferAttribute(uvs, 2));
 
     let geo = new InstancedBufferGeometry();
-    geo.copy(new IcosahedronBufferGeometry(0.095, 0));
+    // geo.copy(new IcosahedronBufferGeometry(0.075, 0));
+    geo.copy(new IcosahedronBufferGeometry(0.065, 0));
     geo.instanceCount = vertices.length / 3;
 
     geo.setAttribute(

@@ -11,7 +11,7 @@ export default function App() {
   return (
     <Canvas style={{ height: "100vh" }}>
       <Suspense fallback={null}>
-        {/* <GlobeWithHeight></GlobeWithHeight> */}
+        <GlobeWithHeight></GlobeWithHeight>
         <ParsC></ParsC>
       </Suspense>
       <Bloom></Bloom>
