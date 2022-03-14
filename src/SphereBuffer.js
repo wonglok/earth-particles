@@ -155,7 +155,7 @@ export class SphereBuffer {
     // this.setAttribute("uv", new Float32BufferAttribute(uvs, 2));
 
     let geo = new InstancedBufferGeometry();
-    geo.copy(new IcosahedronBufferGeometry(0.08, 0));
+    geo.copy(new IcosahedronBufferGeometry(0.095, 0));
     geo.instanceCount = vertices.length / 3;
 
     geo.setAttribute(
