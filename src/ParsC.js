@@ -116,7 +116,7 @@ export function ParsC() {
             inst_position + position
             , 1.0);
 
-          v_inst_color = (inst_color) + 0.7 * pattern(vec2(inst_uv.xy)) * sin(time);
+          v_inst_color = (1.0 - inst_color) * 0.5 + 0.7 * pattern(vec2(inst_uv.xy * 2.0), time * 0.5);
 
           if (displacementColor.r <= 0.5) {
             vert.w = 0.0;
@@ -132,7 +132,7 @@ export function ParsC() {
           varying vec3 v_inst_color;
 
           void main (void) {
-            gl_FragColor = vec4(vec3(1.0 - v_inst_color), 1.0);
+            gl_FragColor = vec4(vec3(v_inst_color), 1.0);
           }
         `,
         transparent: true,

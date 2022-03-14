@@ -27,8 +27,8 @@ export function getFbmPattern() {
         return f/0.96875;
     }
 
-    float pattern (vec2 p) {
-      float vout = fbm4( p + time + fbm6(  p + fbm4( p + time )) );
+    float pattern (vec2 p, float tt) {
+      float vout = fbm4( p + tt + fbm6(  p + fbm4( p + tt )) );
       return abs(vout);
     }
   `;
