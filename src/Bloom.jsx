@@ -32,39 +32,18 @@ export function Bloom({ myCamera }) {
     bloomComposer,
     finalComposer,
   } = useMemo(() => {
-    // let {
-    //   EffectComposer,
-    // } = require("three/examples/jsm/postprocessing/EffectComposer");
-
-    // let baseRTT = new WebGLRenderTarget(size.width, size.height, {
-    //   encoding: sRGBEncoding,
-    // });
     gl.outputEncoding = sRGBEncoding;
     gl.physicallyCorrectLights = true;
     let bloomComposer = new EffectComposer(gl);
-    // let dpr = gl.getPixelRatio();
     bloomComposer.renderToScreen = false;
     let sizeV2 = new Vector2(window.innerWidth, window.innerHeight);
 
-    // let {
-    //   RenderPass,
-    // } = require("three/examples/jsm/postprocessing/RenderPass");
     let renderPass = new RenderPass(scene, camera);
     bloomComposer.addPass(renderPass);
 
-    // let {
-    //   UnrealBloomPass,
-    // } = require("three/examples/jsm/postprocessing/UnrealBloomPass.js");
     let unrealPass = new UnrealBloomPass(sizeV2, 1.5, 0.6, 0.5);
     unrealPass.renderToScreen = true;
 
-    let audio = ({ detail: { low, mid, high, texture } }) => {
-      if (low !== 0) {
-        unrealPass.strength = 3 * (low + mid + high);
-      }
-    };
-    window.addEventListener("audio-info", audio);
-    // window.removeEventListener("audio-info", audio);
     unrealPass.strength = 3;
     unrealPass.threshold = 0.05;
     unrealPass.radius = 1.0;
@@ -81,12 +60,6 @@ export function Bloom({ myCamera }) {
     finalComposer.renderTarget2.texture.encoding = sRGBEncoding;
     finalComposer.renderTarget1.texture.encoding = sRGBEncoding;
 
-    // let {
-    //   ShaderPass,
-    // } = require("three/examples/jsm/postprocessing/ShaderPass.js");
-    // let bloomTexture = {
-    //   value: bloomComposer.renderTarget2.texture,
-    // };
     const finalPass = new ShaderPass(
       new ShaderMaterial({
         uniforms: {
@@ -127,7 +100,6 @@ export function Bloom({ myCamera }) {
         let dpr = gl.getPixelRatio();
 
         gl.getSize(sizeV2);
-        // sizeV2.multiplyScalar(dpr);
         bloomComposer.setSize(sizeV2.x, sizeV2.y);
         finalComposer.setSize(sizeV2.x, sizeV2.y);
 
@@ -147,7 +119,7 @@ export function Bloom({ myCamera }) {
 
   // let materials = {};
   const darkMaterial = new MeshBasicMaterial({
-    color: "black",
+    color: new Color(`#000000`),
   });
 
   const bloomLayer = new Layers();
@@ -167,10 +139,6 @@ export function Bloom({ myCamera }) {
       obj.material = cacheMap.get(obj.uuid);
       cacheMap.delete(obj.uuid);
     }
-    // if (materials[obj.uuid]) {
-    //   obj.material = materials[obj.uuid];
-    //   delete materials[obj.uuid];
-    // }
   }
 
   useFrame((state, dt) => {
