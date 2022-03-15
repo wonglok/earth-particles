@@ -19,11 +19,13 @@ export class SphereBuffer {
     thetaStart = 0,
     thetaLength = Math.PI
   ) {
-    let variations = colors.map((hex) => {
-      return {
-        color: new Color(hex),
-      };
-    });
+    let variations = colors
+      .filter((e) => e)
+      .map((hex) => {
+        return {
+          color: new Color().setStyle(hex),
+        };
+      });
 
     widthSegments = Math.max(3, Math.floor(widthSegments));
     heightSegments = Math.max(2, Math.floor(heightSegments));
@@ -93,8 +95,11 @@ export class SphereBuffer {
         verticesRow.push(index++);
 
         let chosen = variations[Math.floor(Math.random() * variations.length)];
-
-        colorsArr.push(chosen.color.r, chosen.color.b, chosen.color.g);
+        colorsArr.push(
+          1.0 - chosen.color.r,
+          1.0 - chosen.color.b,
+          1.0 - chosen.color.g
+        );
       }
 
       grid.push(verticesRow);

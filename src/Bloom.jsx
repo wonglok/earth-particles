@@ -39,7 +39,8 @@ export function Bloom({ myCamera }) {
     // let baseRTT = new WebGLRenderTarget(size.width, size.height, {
     //   encoding: sRGBEncoding,
     // });
-
+    gl.outputEncoding = sRGBEncoding;
+    gl.physicallyCorrectLights = true;
     let bloomComposer = new EffectComposer(gl);
     // let dpr = gl.getPixelRatio();
     bloomComposer.renderToScreen = false;

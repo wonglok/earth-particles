@@ -23,6 +23,7 @@ import { useTexture } from "@react-three/drei";
 import { SphereBuffer } from "./SphereBuffer";
 // import { sRGBEncoding } from "three";
 import { getFbmPattern } from "./getFbmPattern";
+import { Color } from "three";
 
 // import { BlurPass, Resizer, KernelSize } from "postprocessing";
 
@@ -30,9 +31,14 @@ export function ParsC({
   radius = 15.7,
   widthSegment = 200,
   heightSegment = 200,
-  speedPulse = 1,
-  randomness = 1,
-  speedColor = 1,
+
+  eachScale = 0.5,
+  eachRandomnesss = 0.5,
+
+  pulseSpeed = 1.0,
+  pulseAmp = 1.0,
+  pulseUV = 1.0,
+
   colors = [],
 }) {
   //
@@ -46,8 +52,10 @@ export function ParsC({
   //
   let geo = useMemo(() => {
     return new SphereBuffer(radius, widthSegment, heightSegment, colors);
-  }, [radius, widthSegment, heightSegment, colors]);
+  }, [radius, widthSegment, heightSegment, colors.join(".")]);
 
+  //
+  //
   useEffect(() => {
     return () => {
       geo.dispose();
@@ -57,16 +65,24 @@ export function ParsC({
   //
   //
   let uniforms = useMemo(() => {
+    console.log(colors);
     return {
       //
       displacement: { value: displacement },
-      speedPulse: { value: speedPulse },
-      speedColor: { value: speedColor },
-      randomness: { value: randomness },
+      pulseSpeed: { value: pulseSpeed },
+      pulseAmp: { value: pulseAmp },
+      pulseUV: { value: pulseUV },
+      eachScale: { value: eachScale },
+      eachRandomnesss: { value: eachRandomnesss },
+
+      color0: { value: new Color(colors[0]) },
+      color1: { value: new Color(colors[1]) },
+      color2: { value: new Color(colors[2]) },
+      color3: { value: new Color(colors[3]) },
 
       time: { value: 0 },
     };
-  }, [displacement, randomness, speedColor, speedPulse]);
+  }, [displacement, eachScale, pulseUV, pulseSpeed, colors]);
 
   //
   //
@@ -103,6 +119,7 @@ export function ParsC({
         attribute vec2 inst_uv;
         attribute float inst_size;
 
+        varying float v_inst_size;
         varying vec3 v_inst_color;
 
         ${getFbmPattern()}
@@ -111,21 +128,34 @@ export function ParsC({
          	return vec4( mix( pow( value.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), value.rgb * 12.92, vec3( lessThanEqual( value.rgb, vec3( 0.0031308 ) ) ) ), value.a );
         }
 
+        uniform float eachRandomnesss;
+        uniform float eachScale;
+        uniform float pulseUV;
+        uniform float pulseSpeed;
+        uniform float pulseAmp;
+
         void main (void) {
+          //
           float PIE = 3.14159265;
 
           //
-          float rave = pattern(vec2(inst_uv.xy * 3.5), time * 0.5);
+          float rave = pattern(vec2(inst_uv.xy * pulseUV), time * pulseSpeed) * pulseAmp;
 
           vec4 displacementData = texture2D(displacement, inst_uv);
 
           vec4 vert = vec4(
-            inst_position + position * (inst_size * 0.5 + 0.5)
-          , 1.0);
+              inst_position
 
+            + inst_normal * rave
+            + position * (inst_size * eachRandomnesss + eachScale)
+            ,
+            1.0
+          );
+
+          v_inst_size = inst_size;
           v_inst_color = inst_color.rgb;// * rave;
 
-          if (displacementData.r <= 0.5) {
+          if (displacementData.r <= 0.1) {
             vert.w = 0.0;
             gl_Position = projectionMatrix * modelViewMatrix * vert;
           } else {
@@ -137,9 +167,25 @@ export function ParsC({
       fragmentShader: /* glsl */ `
         uniform float time;
         varying vec3 v_inst_color;
+        varying float v_inst_size;
+
+        uniform vec3 color0;
+        uniform vec3 color1;
+        uniform vec3 color2;
+        uniform vec3 color3;
 
         void main (void) {
-          gl_FragColor = vec4(v_inst_color, 1.0);
+
+          if (v_inst_size >= 0.75) {
+            gl_FragColor = vec4(color0, 1.0);
+          } else if (v_inst_size >= 0.5) {
+            gl_FragColor = vec4(color1, 1.0);
+          } else if (v_inst_size >= 0.25) {
+            gl_FragColor = vec4(color2, 1.0);
+          } else {
+            gl_FragColor = vec4(color3, 1.0);
+          }
+
         }
       `,
       transparent: true,

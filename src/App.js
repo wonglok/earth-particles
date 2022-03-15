@@ -29,6 +29,8 @@ export default function App() {
       <Bloom></Bloom>
 
       <CameraAdjust />
+
+      <ambientLight intensity={1}></ambientLight>
       {orbit && <MyOrbitControls key={chosen.resetCamera} />}
     </Canvas>
   );
@@ -46,11 +48,22 @@ function CanvasContent() {
       value: placesDB.map((e) => e.name)[0],
       options: placesDB.map((e) => e.name),
     },
+    //
+    //
     earthColor: "#092762",
-    particleColorA: "#ff89ff",
-    particleColorB: "#00ffff",
-    particleColorC: "#0e2199",
-    particleColorD: "#093a6f",
+
+    //
+    colorA: "#ff89ff",
+    colorB: "#00ffff",
+    colorC: "#0e2199",
+    colorD: "#093a6f",
+
+    eachScale: 1,
+    eachRandomnesss: 0.3,
+
+    pulseSpeed: 0.5,
+    pulseAmp: 0.3,
+    pulseUV: 10.0,
   });
 
   let chosenCoord = useMemo(() => {
@@ -72,17 +85,20 @@ function CanvasContent() {
         </mesh>
         <ParsC
           colors={[
-            chosen.particleColorA,
-            chosen.particleColorB,
-            chosen.particleColorC,
-            chosen.particleColorD,
+            //
+            chosen.colorA,
+            chosen.colorB,
+            chosen.colorC,
+            chosen.colorD,
           ]}
           radius={15.7}
           widthSegment={200}
           heightSegment={200}
-          speedPulse={1}
-          randomness={1}
-          speedColor={1}
+          eachScale={chosen.eachScale}
+          eachRandomnesss={chosen.eachRandomnesss}
+          pulseSpeed={chosen.pulseSpeed}
+          pulseAmp={chosen.pulseAmp}
+          pulseUV={chosen.pulseUV}
         ></ParsC>
       </RotationTool>
 
