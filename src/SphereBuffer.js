@@ -1,57 +1,29 @@
-import { BufferGeometry } from "three/src/core/BufferGeometry.js";
-import { Float32BufferAttribute } from "three/src/core/BufferAttribute.js";
+// import { BufferGeometry } from "three/src/core/BufferGeometry.js";
+// import { Float32BufferAttribute } from "three/src/core/BufferAttribute.js";
 import { Vector3 } from "three/src/math/Vector3.js";
 import { InstancedBufferGeometry } from "three";
 import { IcosahedronBufferGeometry } from "three";
 import { InstancedBufferAttribute } from "three";
 import { Color } from "three";
-import { BoxBufferGeometry } from "three";
+// import { BoxBufferGeometry } from "three";
 
 export class SphereBuffer {
   constructor(
     radius = 1,
     widthSegments = 32,
     heightSegments = 16,
+    colors = [],
     phiStart = 0,
     phiLength = Math.PI * 2,
+
     thetaStart = 0,
     thetaLength = Math.PI
   ) {
-    // this.parameters = {
-    //   radius: radius,
-    //   widthSegments: widthSegments,
-    //   heightSegments: heightSegments,
-    //   phiStart: phiStart,
-    //   phiLength: phiLength,
-    //   thetaStart: thetaStart,
-    //   thetaLength: thetaLength,
-    // };
-
-    let variations = [
-      { size: 0.333 * 1.0, color: new Color("#ffffff") },
-      { size: 0.333 * 1.5, color: new Color("#ffffff") },
-      { size: 0.333 * 2.0, color: new Color("#ffffff") },
-      {
-        size: 0.333 * 2.0,
-        color: new Color("#ff00ff").add(new Color("#005555")),
-      },
-      {
-        size: 0.333 * 4.0,
-        color: new Color("#ff00ff").add(new Color("#005555")),
-      },
-      {
-        size: 0.333 * 2.0,
-        color: new Color("#ff00ff").sub(new Color("#005555")),
-      },
-      {
-        size: 0.333 * 4.0,
-        color: new Color("#00ffff").add(new Color("#0000ff")),
-      },
-      {
-        size: 0.333 * 5.0,
-        color: new Color("#00ffff").add(new Color("#0000ff")),
-      },
-    ];
+    let variations = colors.map((hex) => {
+      return {
+        color: new Color(hex),
+      };
+    });
 
     widthSegments = Math.max(3, Math.floor(widthSegments));
     heightSegments = Math.max(2, Math.floor(heightSegments));
@@ -67,7 +39,7 @@ export class SphereBuffer {
     // buffers
 
     const indices = [];
-    const colors = [];
+    const colorsArr = [];
     const vertices = [];
     const normals = [];
     const uvs = [];
@@ -121,7 +93,8 @@ export class SphereBuffer {
         verticesRow.push(index++);
 
         let chosen = variations[Math.floor(Math.random() * variations.length)];
-        colors.push(chosen.color.r, chosen.color.b, chosen.color.g);
+
+        colorsArr.push(chosen.color.r, chosen.color.b, chosen.color.g);
       }
 
       grid.push(verticesRow);
@@ -170,7 +143,7 @@ export class SphereBuffer {
     );
     geo.setAttribute(
       "inst_color",
-      new InstancedBufferAttribute(new Float32Array(colors), 3)
+      new InstancedBufferAttribute(new Float32Array(colorsArr), 3)
     );
     geo.setAttribute(
       "inst_uv",
@@ -181,17 +154,5 @@ export class SphereBuffer {
       new InstancedBufferAttribute(new Float32Array(sizes), 1)
     );
     return geo;
-  }
-
-  static fromJSON(data) {
-    return new SphereBuffer(
-      data.radius,
-      data.widthSegments,
-      data.heightSegments,
-      data.phiStart,
-      data.phiLength,
-      data.thetaStart,
-      data.thetaLength
-    );
   }
 }

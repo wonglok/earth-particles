@@ -64,14 +64,12 @@ export function Bloom({ myCamera }) {
     };
     window.addEventListener("audio-info", audio);
     // window.removeEventListener("audio-info", audio);
-    unrealPass.strength = 3.5;
+    unrealPass.strength = 3;
     unrealPass.threshold = 0.05;
     unrealPass.radius = 1.0;
     unrealPass.setSize(size.width, size.height);
 
     bloomComposer.addPass(unrealPass);
-
-    //
 
     const finalComposer = new EffectComposer(gl);
     finalComposer.addPass(renderPass);
@@ -110,7 +108,7 @@ export function Bloom({ myCamera }) {
           varying vec2 vUv;
 
           void main() {
-            gl_FragColor = ( texture2D( baseTexture, vUv ) * 1.0 + 1.0 * texture2D( bloomTexture, vUv ) );
+            gl_FragColor = LinearTosRGB( texture2D( baseTexture, vUv ) * 1.0 + 1.0 * texture2D( bloomTexture, vUv ) );
           }
         `,
         defines: {},
@@ -174,7 +172,12 @@ export function Bloom({ myCamera }) {
     // }
   }
 
-  let run = (dt) => {
+  useFrame((state, dt) => {
+    scene.traverse((it) => {
+      if (it.userData.enableBloom) {
+        enableBloom(it);
+      }
+    });
     let origBG = scene.background;
 
     //
@@ -187,15 +190,6 @@ export function Bloom({ myCamera }) {
     scene.background = origBG;
     scene.traverse(restoreMaterial);
     finalComposer.render(dt);
-  };
-
-  useFrame((state, dt) => {
-    scene.traverse((it) => {
-      if (it.userData.enableBloom) {
-        enableBloom(it);
-      }
-    });
-    run(dt);
   }, 10000);
 
   return <group></group>;
